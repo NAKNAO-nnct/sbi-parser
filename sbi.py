@@ -19,6 +19,8 @@ for file in files:
     # 各項目を保持
     title = 0
     for i in range(header_count+1, len(csvdata)):
+        if len(csvdata[i]) < 1:
+            continue
         受渡日 = csvdata[i][6]
         受渡日_sprit = 受渡日.split('/')
         受渡日_年 = 受渡日_sprit[0]
