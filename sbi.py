@@ -44,6 +44,9 @@ for file in files:
             '損益金額/徴収額': int(csvdata[i][11]),
         })
 
+# 取引年でソートする
+output = dict(sorted(output.items()))
+
 with open('sbi_soneki.json', 'w') as f:
     json.dump(output, f, indent=4, ensure_ascii=False)
 
