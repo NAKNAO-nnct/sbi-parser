@@ -67,9 +67,11 @@ for year in output:
                 elif '徴収' in 取引種別:
                     損益_日毎 -= 取引['損益金額/徴収額']
                 else:
-                    print('[WRNING] なんか 徴収でも還付でもないものがあります')
-                    print(取引)
-                    # TODO: 投信分配金が考慮されていない
+                    if 取引['取引'] == '投信分配金':
+                        損益_日毎 += 取引['損益金額/徴収額']
+                    else:
+                        print('[WRNING] なんか 徴収でも還付でもないものがあります')
+                        print(取引)
             損益_月毎 += 損益_日毎
             # print(year + '/' + month + '/ ' +day)
             # print(損益_日毎)
