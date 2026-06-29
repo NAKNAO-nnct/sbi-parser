@@ -51,16 +51,26 @@ with open('sbi_soneki.json', 'w') as f:
     json.dump(output, f, indent=4, ensure_ascii=False)
 
 損益 = 0
+税金 = 0
 for year in output:
     損益_年毎 = 0
+    税金_年毎 = 0
     for month in output[year]:
         損益_月毎 = 0
+        税金_月毎 = 0
         for day in output[year][month]:
             損益_日毎 = 0
+            税金_日毎 = 0
 
             取引_日 = output[year][month][day]
             for 取引 in 取引_日:
                 取引種別 = 取引['銘柄コード/種別']
+
+                # 税金計算
+                if 取引種別 == '配当所得税徴収額':
+                    税金_日毎 += 取引['損益金額/徴収額']
+                elif 取引種別 == '譲渡益税徴収額':
+                    税金_日毎 += 取引['損益金額/徴収額']
 
                 # 利益計算
                 if 取引種別.isdecimal():
@@ -74,19 +84,25 @@ for year in output:
                         損益_日毎 += 取引['損益金額/徴収額']
                     elif 取引['取引'] == '国内債券利金':
                         損益_日毎 += 取引['損益金額/徴収額']
+                    elif 取引['取引'] == '国内投信解約':
+                        損益_日毎 += 取引['損益金額/徴収額']
                     else:
                         print('[WRNING] なんか 徴収でも還付でもないものがあります')
                         print(取引)
             損益_月毎 += 損益_日毎
             # print(year + '/' + month + '/ ' +day)
             # print(損益_日毎)
+            税金_月毎 += 税金_日毎
 
         損益_年毎 += 損益_月毎
+        税金_年毎 += 税金_月毎
         # print(year + '年' + month + '月')
         # print(損益_月毎)
 
     損益 += 損益_年毎
-    print(year + '年損益', str(損益_年毎) + '円')
+    税金 += 税金_年毎
+    print(year + '年損益', str(損益_年毎) + '円', ' 税金', str(税金_年毎) + '円')
 
 print('= = = = = =')
 print('現状損益', 損益, '円')
+print('現状税金', 税金, '円')
